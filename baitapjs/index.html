@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính BMI</title>
+</head>
+<body>
+
+    <h1>Tính chỉ số BMI</h1>
+
+    <label>Cân nặng (kg):</label>
+    <input type="text" id="canNang"><br><br>
+
+    <label>Chiều cao (m):</label>
+    <input type="text" id="chieuCao"><br><br>
+
+    <button id="btnTinh">Tính BMI</button>
+
+    <p id="result"></p>
+
+    <script>
+        document.getElementById("btnTinh").onclick = function () {
+    // Lấy dữ liệu
+    let canNang = Number(document.getElementById("canNang").value);
+    let chieuCao = Number(document.getElementById("chieuCao").value);
+    let result = document.getElementById("result");
+
+    // Kiểm tra hợp lệ
+    if (
+        isNaN(canNang) || isNaN(chieuCao) ||
+        canNang <= 0 || chieuCao <= 0
+    ) {
+        result.innerHTML = "Vui lòng nhập số hợp lệ!";
+        return;
+    }
+
+    // Tính BMI
+    let bmi = canNang / (chieuCao * chieuCao);
+    let phanLoai = "";
+
+    // Phân loại BMI
+    if (bmi < 18.5) {
+        phanLoai = "Thiếu cân";
+    } else if (bmi < 25) {
+        phanLoai = "Bình thường";
+    } else if (bmi < 30) {
+        phanLoai = "Thừa cân";
+    } else {
+        phanLoai = "Béo phì";
+    }
+
+    // Hiển thị kết quả
+    result.innerHTML = "BMI: " + bmi.toFixed(2) + " - " + phanLoai;
+};
+    </script>
+</body>
+</html>

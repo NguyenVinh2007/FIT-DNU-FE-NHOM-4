@@ -1,0 +1,103 @@
+/* Reset cơ bản */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+/* Container chia sidebar và main */
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg, #4CAF50, #2E7D32);
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.sidebar ul li:hover {
+  background-color: rgba(255,255,255,0.3);
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  font-size: 22px;
+  color: #2E7D32;
+}
+
+.header input {
+  padding: 8px 12px;
+  border: 1px solid #bc5e5e;
+  border-radius: 6px;
+  width: 200px;
+}
+
+/* Card */
+.card {
+  background-color: #a06c6c;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #0f0b4a;
+  color: white;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #946e6e;
+}
+
+tr:nth-child(even) {
+  background-color
