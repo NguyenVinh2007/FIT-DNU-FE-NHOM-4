@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/api.js" defer></script>
+</head>
+<body>
+    <!doctype html>
+<html lang="vi" class="h-full">
+ <head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt Thợ Sửa Chữa</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { body: ['Be Vietnam Pro', 'sans-serif'] },
+          colors: {
+            brand: '#2563eb',
+            accent: '#f97316',
+            dark: '#1e293b',
+            surface: '#f8fafc'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { font-family: 'Be Vietnam Pro', sans-serif; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(37,99,235,0.1); }
+    .card-hover { transition: all 0.3s ease; }
+    .timeline-dot { width: 16px; height: 16px; border-radius: 50%; }
+    .timeline-dot.active { background: #2563eb; box-shadow: 0 0 0 4px rgba(37,99,235,0.2); }
+    .timeline-dot.completed { background: #10b981; }
+    .timeline-dot.pending { background: #e2e8f0; }
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover, .sidebar-link.active { background: rgba(255,255,255,0.1); border-radius: 8px; }
+    .stat-card { background: linear-gradient(135deg, #fff 0%, #f8fafc 100%); }
+    .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+    input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-surface font-body overflow-auto"><!-- Navigation -->
+  <nav id="main-nav" class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50 border-b border-gray-100">
+   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="showPage('home')">
+     <div class="w-9 h-9 bg-brand rounded-lg flex items-center justify-center"><i data-lucide="wrench" class="w-5 h-5 text-white"></i>
+     </div><span class="font-bold text-lg text-dark">FixIt</span>
+    </div>
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600"><a href="#" onclick="showPage('home')" class="hover:text-brand transition">Trang chủ</a> <a href="#" onclick="showPage('tracking')" class="hover:text-brand transition">Theo dõi</a> <a href="#" onclick="showPage('technician')" class="hover:text-brand transition">Kỹ thuật viên</a> <a href="#" onclick="showPage('admin')" class="hover:text-brand transition">Admin</a>
+    </div>
+    <div class="flex items-center gap-3"><span id="nav-hotline" class="hidden sm:inline text-sm font-semibold text-accent"><i data-lucide="phone" class="w-4 h-4 inline"></i> 1900 1234</span> <button onclick="toggleMobileMenu()" class="md:hidden p-2"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+   </div>
+   <div id="mobile-menu" class="hidden md:hidden border-t px-4 py-3 bg-white space-y-2"><a href="#" onclick="showPage('home');toggleMobileMenu()" class="block py-2 text-sm font-medium text-gray-700">Trang chủ</a> <a href="#" onclick="showPage('tracking');toggleMobileMenu()" class="block py-2 text-sm font-medium text-gray-700">Theo dõi</a> <a href="#" onclick="showPage('technician');toggleMobileMenu()" class="block py-2 text-sm font-medium text-gray-700">Kỹ thuật viên</a> <a href="#" onclick="showPage('admin');toggleMobileMenu()" class="block py-2 text-sm font-medium text-gray-700">Admin</a>
+   </div>
+  </nav>
+  <div class="pt-16 h-full"><!-- PAGE: HOME -->
+   <div id="page-home" class="page active"><!-- Hero -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-brand via-blue-600 to-blue-800 text-white">
+     <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
+     </div>
+     <div class="relative max-w-7xl mx-auto px-4 py-20 md:py-28 text-center">
+      <h1 id="hero-title" class="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">Đặt thợ sửa chữa tại nhà<br>
+       nhanh chóng</h1>
+      <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto">Kỹ thuật viên chuyên nghiệp, đến tận nơi trong 30 phút. Giá minh bạch, bảo hành dài hạn.</p>
+      <div class="max-w-xl mx-auto relative"><input type="text" placeholder="Tìm dịch vụ sửa chữa..." class="w-full pl-12 pr-4 py-4 rounded-2xl text-gray-800 shadow-xl text-base focus:outline-none focus:ring-4 focus:ring-white/30"> <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+      </div>
+     </div>
+    </section><!-- Services -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+     <h2 class="text-2xl md:text-3xl font-bold text-dark text-center mb-3">Dịch vụ sửa chữa</h2>
+     <p class="text-gray-500 text-center mb-10">Chọn dịch vụ bạn cần, chúng tôi sẽ lo phần còn lại</p>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="services-grid">
+     </div>
+    </section><!-- Process -->
+    <section class="bg-white py-16">
+     <div class="max-w-5xl mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-dark mb-12">Quy trình đặt dịch vụ</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <div class="fade-in">
+        <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4"><i data-lucide="mouse-pointer-click" class="w-8 h-8 text-brand"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">1. Chọn dịch vụ</h3>
+        <p class="text-gray-500 text-sm">Chọn loại sửa chữa và mô tả sự cố của bạn</p>
+       </div>
+       <div class="fade-in">
+        <div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4"><i data-lucide="calendar-check" class="w-8 h-8 text-accent"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">2. Đặt lịch hẹn</h3>
+        <p class="text-gray-500 text-sm">Chọn thời gian thuận tiện cho bạn</p>
+       </div>
+       <div class="fade-in">
+        <div class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4"><i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">3. Kỹ thuật viên đến nhà</h3>
+        <p class="text-gray-500 text-sm">Thợ chuyên nghiệp đến sửa tận nơi</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+     <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+       <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center">
+         <i data-lucide="wrench" class="w-4 h-4 text-white"></i>
+        </div><span class="font-bold text-lg">FixNow</span>
+       </div>
+       <p class="text-gray-400 text-sm">Nền tảng đặt thợ sửa chữa tại nhà hàng đầu Việt Nam</p>
+      </div>
+      <div>
+       <h4 class="font-semibold mb-3">Liên hệ</h4>
+       <p class="text-gray-400 text-sm mb-1"><i data-lucide="phone" class="w-4 h-4 inline mr-1"></i> <span id="footer-hotline">1900 1234</span></p>
+       <p class="text-gray-400 text-sm mb-1"><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> support@fixnow.vn</p>
+       <p class="text-gray-400 text-sm"><i data-lucide="map-pin" class="w-4 h-4 inline mr-1"></i> 120 Yên Lãng, Hà Nội</p>
+      </div>
+      <div>
+       <h4 class="font-semibold mb-3">Dịch vụ</h4>
+       <p class="text-gray-400 text-sm mb-1">Sửa điện</p>
+       <p class="text-gray-400 text-sm mb-1">Sửa nước</p>
+       <p class="text-gray-400 text-sm mb-1">Sửa máy lạnh</p>
+       <p class="text-gray-400 text-sm">Sửa máy giặt</p>
+      </div>
+     </div>
+    </footer>
+   </div><!-- PAGE: BOOKING FORM -->
+   <div id="page-booking" class="page">
+    <div class="max-w-5xl mx-auto px-4 py-10 fade-in">
+     <h2 class="text-2xl font-bold text-dark mb-6">Đặt lịch sửa chữa</h2>
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+       <form id="booking-form" onsubmit="submitBooking(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+         <div><label class="block text-sm font-medium text-gray-700 mb-1">Họ tên *</label> <input type="text" id="bf-name" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="Nguyễn Văn A">
+         </div>
+         <div><label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại *</label> <input type="tel" id="bf-phone" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="0901 234 567">
+         </div>
+        </div>
+        <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ *</label> <input type="text" id="bf-address" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="Số nhà, đường, quận...">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+         <div><label class="block text-sm font-medium text-gray-700 mb-1">Loại dịch vụ *</label> <select id="bf-service" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white"> <option value="">Chọn dịch vụ</option> <option value="Sửa điện">Sửa điện</option> <option value="Sửa nước">Sửa nước</option> <option value="Sửa máy lạnh">Sửa máy lạnh</option> <option value="Sửa máy giặt">Sửa máy giặt</option> <option value="Sửa tủ lạnh">Sửa tủ lạnh</option> </select>
+         </div>
+         <div><label class="block text-sm font-medium text-gray-700 mb-1">Ngày sửa *</label> <input type="date" id="bf-date" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+         <div><label class="block text-sm font-medium text-gray-700 mb-1">Giờ sửa *</label> <select id="bf-time" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white"> <option value="">Chọn giờ</option> <option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option> <option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option> </select>
+         </div>
+         <div><label class="block text-sm font-medium text-gray-700 mb-1">Ảnh sự cố</label> <input type="file" accept="image/*" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-brand file:font-medium file:text-sm">
+         </div>
+        </div>
+        <div class="mb-6"><label class="block text-sm font-medium text-gray-700 mb-1">Mô tả sự cố</label> <textarea id="bf-desc" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none resize-none" placeholder="Mô tả chi tiết vấn đề..."></textarea>
+        </div><button type="submit" id="booking-submit-btn" class="w-full bg-brand hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition text-base shadow-lg shadow-brand/20"> Xác nhận đặt lịch </button>
+       </form>
+       <div id="booking-success" class="hidden text-center py-10">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+        </div>
+        <h3 class="text-xl font-bold text-dark mb-2">Đặt lịch thành công!</h3>
+        <p class="text-gray-500 mb-4">Chúng tôi sẽ liên hệ xác nhận trong vòng 15 phút.</p><button onclick="showPage('tracking')" class="text-brand font-medium hover:underline">Theo dõi trạng thái →</button>
+       </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-fit">
+       <h3 class="font-semibold text-dark mb-4">Chi phí dự kiến</h3>
+       <div id="cost-estimate" class="space-y-3">
+        <div class="flex justify-between text-sm">
+         <span class="text-gray-500">Phí dịch vụ</span><span class="font-medium" id="cost-service">---</span>
+        </div>
+        <div class="flex justify-between text-sm">
+         <span class="text-gray-500">Phí di chuyển</span><span class="font-medium">30.000đ</span>
+        </div>
+        <hr class="my-3">
+        <div class="flex justify-between">
+         <span class="font-semibold">Tổng dự kiến</span><span class="font-bold text-brand" id="cost-total">---</span>
+        </div>
+       </div>
+       <p class="text-xs text-gray-400 mt-4">* Giá chính xác sẽ được báo sau khi kiểm tra</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- PAGE: TRACKING -->
+   <div id="page-tracking" class="page">
+    <div class="max-w-3xl mx-auto px-4 py-10 fade-in">
+     <h2 class="text-2xl font-bold text-dark mb-6">Theo dõi trạng thái</h2>
+     <div id="tracking-content">
+      <div id="tracking-empty" class="text-center py-16">
+       <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="search" class="w-8 h-8 text-gray-400"></i>
+       </div>
+       <p class="text-gray-500">Chưa có lịch đặt nào. Hãy đặt lịch trước!</p><button onclick="showPage('home')" class="mt-4 text-brand font-medium hover:underline">← Về trang chủ</button>
+      </div>
+      <div id="tracking-list" class="space-y-4 hidden"></div>
+     </div>
+    </div>
+   </div><!-- PAGE: TECHNICIAN DASHBOARD -->
+   <div id="page-technician" class="page">
+    <div class="flex h-full">
+     <aside class="hidden md:flex w-64 bg-dark flex-col p-5 gap-1 flex-shrink-0">
+      <div class="flex items-center gap-2 mb-8">
+       <div class="w-9 h-9 bg-brand rounded-lg flex items-center justify-center">
+        <i data-lucide="wrench" class="w-5 h-5 text-white"></i>
+       </div><span class="font-bold text-white">Kỹ thuật viên</span>
+      </div><a href="#" class="sidebar-link active flex items-center gap-3 px-3 py-2.5 text-white text-sm"><i data-lucide="calendar" class="w-4 h-4"></i> Lịch làm việc</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="clipboard-list" class="w-4 h-4"></i> Booking hôm nay</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="history" class="w-4 h-4"></i> Lịch sử</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="user" class="w-4 h-4"></i> Hồ sơ</a>
+     </aside>
+     <div class="flex-1 p-6 overflow-auto">
+      <h2 class="text-xl font-bold text-dark mb-6">Dashboard Kỹ thuật viên</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Lịch hôm nay</p>
+        <p class="text-2xl font-bold text-dark" id="tech-today-count">0</p>
+       </div>
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Thu nhập tháng</p>
+        <p class="text-2xl font-bold text-green-600">4.500.000đ</p>
+       </div>
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Đánh giá</p>
+        <p class="text-2xl font-bold text-accent">4.8 ⭐</p>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+       <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="font-semibold">Booking được phân công</h3>
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+         <thead class="bg-gray-50 text-left text-gray-500">
+          <tr>
+           <th class="px-5 py-3">Khách hàng</th>
+           <th class="px-5 py-3">Dịch vụ</th>
+           <th class="px-5 py-3">Thời gian</th>
+           <th class="px-5 py-3">Trạng thái</th>
+           <th class="px-5 py-3">Hành động</th>
+          </tr>
+         </thead>
+         <tbody id="tech-bookings-table"></tbody>
+        </table>
+        <div id="tech-empty" class="text-center py-8 text-gray-400 text-sm">
+         Chưa có booking nào
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- PAGE: ADMIN -->
+   <div id="page-admin" class="page">
+    <div class="flex h-full">
+     <aside class="hidden md:flex w-64 bg-dark flex-col p-5 gap-1 flex-shrink-0">
+      <div class="flex items-center gap-2 mb-8">
+       <div class="w-9 h-9 bg-accent rounded-lg flex items-center justify-center">
+        <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+       </div><span class="font-bold text-white">Admin Panel</span>
+      </div><a href="#" class="sidebar-link active flex items-center gap-3 px-3 py-2.5 text-white text-sm"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="settings" class="w-4 h-4"></i> Services</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="users" class="w-4 h-4"></i> Technicians</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="book-open" class="w-4 h-4"></i> Bookings</a> <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-gray-400 text-sm"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> Reports</a>
+     </aside>
+     <div class="flex-1 p-6 overflow-auto">
+      <h2 class="text-xl font-bold text-dark mb-6">Admin Dashboard</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Tổng booking</p>
+        <p class="text-2xl font-bold text-dark" id="admin-total">0</p>
+       </div>
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Hoàn thành</p>
+        <p class="text-2xl font-bold text-green-600" id="admin-completed">0</p>
+       </div>
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Đang xử lý</p>
+        <p class="text-2xl font-bold text-brand" id="admin-processing">0</p>
+       </div>
+       <div class="stat-card rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p class="text-sm text-gray-500 mb-1">Doanh thu</p>
+        <p class="text-2xl font-bold text-accent" id="admin-revenue">0đ</p>
+       </div>
+      </div><!-- Bookings Table -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+       <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="font-semibold">Quản lý Booking</h3>
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+         <thead class="bg-gray-50 text-left text-gray-500">
+          <tr>
+           <th class="px-5 py-3">Mã</th>
+           <th class="px-5 py-3">Khách hàng</th>
+           <th class="px-5 py-3">Dịch vụ</th>
+           <th class="px-5 py-3">Ngày</th>
+           <th class="px-5 py-3">Trạng thái</th>
+           <th class="px-5 py-3">Hành động</th>
+          </tr>
+         </thead>
+         <tbody id="admin-bookings-table"></tbody>
+        </table>
+        <div id="admin-empty" class="text-center py-8 text-gray-400 text-sm">
+         Chưa có booking nào
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Status Update Modal -->
+  <div id="status-modal" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
+   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+    <h3 class="font-bold text-lg mb-4">Cập nhật trạng thái</h3><select id="modal-status" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm mb-4 bg-white"> <option value="Đã xác nhận">Đã xác nhận</option> <option value="Thợ đang di chuyển">Thợ đang di chuyển</option> <option value="Đang sửa chữa">Đang sửa chữa</option> <option value="Hoàn thành">Hoàn thành</option> </select>
+    <div class="flex gap-3"><button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium hover:bg-gray-50 transition">Hủy</button> <button onclick="confirmStatusUpdate()" class="flex-1 py-2.5 rounded-xl bg-brand text-white text-sm font-medium hover:bg-blue-700 transition">Xác nhận</button>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Services data
+    const services = [
+      { name: 'Sửa điện', desc: 'Sửa chữa hệ thống điện, ổ cắm, công tắc', price: 150000, icon: 'zap' },
+      { name: 'Sửa nước', desc: 'Sửa ống nước, vòi nước, bồn cầu', price: 200000, icon: 'droplets' },
+      { name: 'Sửa máy lạnh', desc: 'Vệ sinh, sửa chữa, bơm gas máy lạnh', price: 300000, icon: 'thermometer-snowflake' },
+      { name: 'Sửa máy giặt', desc: 'Sửa chữa các loại máy giặt', price: 250000, icon: 'rotate-cw' },
+      { name: 'Sửa tủ lạnh', desc: 'Sửa chữa tủ lạnh, tủ đông', price: 280000, icon: 'refrigerator' }
+    ];
+
+    const statusSteps = ['Đã tạo lịch', 'Đã xác nhận', 'Thợ đang di chuyển', 'Đang sửa chữa', 'Hoàn thành'];
+    let allBookings = [];
+    let editingBookingId = null;
+
+    // Render services grid
+    function renderServices() {
+      const grid = document.getElementById('services-grid');
+      grid.innerHTML = services.map(s => `
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover cursor-pointer">
+          <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
+            <i data-lucide="${s.icon}" class="w-6 h-6 text-brand"></i>
+          </div>
+          <h3 class="font-semibold text-dark text-lg mb-1">${s.name}</h3>
+          <p class="text-gray-500 text-sm mb-3">${s.desc}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-brand font-bold">${s.price.toLocaleString()}đ~</span>
+            <button onclick="openBooking('${s.name}')" class="bg-brand hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition font-medium">Đặt lịch</button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function openBooking(serviceName) {
+      showPage('booking');
+      if (serviceName) document.getElementById('bf-service').value = serviceName;
+      updateCost();
+    }
+
+    function updateCost() {
+      const svc = document.getElementById('bf-service').value;
+      const found = services.find(s => s.name === svc);
+      const price = found ? found.price : 0;
+      document.getElementById('cost-service').textContent = price ? price.toLocaleString() + 'đ' : '---';
+      document.getElementById('cost-total').textContent = price ? (price + 30000).toLocaleString() + 'đ' : '---';
+    }
+
+    // Navigation
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      if (name === 'tracking') renderTracking();
+      if (name === 'technician') renderTechDashboard();
+      if (name === 'admin') renderAdminDashboard();
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    // Booking submission
+    async function submitBooking(e) {
+      e.preventDefault();
+      if (allBookings.length >= 999) {
+        showInlineMsg('Đã đạt giới hạn 999 booking!'); return;
+      }
+      const btn = document.getElementById('booking-submit-btn');
+      btn.disabled = true; btn.textContent = 'Đang xử lý...';
+
+      const svc = document.getElementById('bf-service').value;
+      const found = services.find(s => s.name === svc);
+
+      const result = await window.dataSdk.create({
+        full_name: document.getElementById('bf-name').value,
+        phone: document.getElementById('bf-phone').value,
+        address: document.getElementById('bf-address').value,
+        service_type: svc,
+        description: document.getElementById('bf-desc').value,
+        date: document.getElementById('bf-date').value,
+        time: document.getElementById('bf-time').value,
+        status: 'Đã tạo lịch',
+        technician: 'Trần Văn Minh',
+        estimated_cost: found ? found.price + 30000 : 0,
+        created_at: new Date().toISOString()
+      });
+
+      btn.disabled = false; btn.textContent = 'Xác nhận đặt lịch';
+      if (result.isOk) {
+        document.getElementById('booking-form').classList.add('hidden');
+        document.getElementById('booking-success').classList.remove('hidden');
+      }
+    }
+
+    function showInlineMsg(msg) {
+      const el = document.createElement('div');
+      el.className = 'fixed top-20 right-4 bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg z-50 text-sm font-medium';
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // Tracking
+    function renderTracking() {
+      const list = document.getElementById('tracking-list');
+      const empty = document.getElementById('tracking-empty');
+      if (!allBookings.length) { empty.classList.remove('hidden'); list.classList.add('hidden'); return; }
+      empty.classList.add('hidden'); list.classList.remove('hidden');
+      list.innerHTML = allBookings.map(b => {
+        const currentIdx = statusSteps.indexOf(b.status);
+        const timeline = statusSteps.map((step, i) => {
+          const cls = i < currentIdx ? 'completed' : i === currentIdx ? 'active' : 'pending';
+          return `<div class="flex items-center gap-3 mb-3"><div class="timeline-dot ${cls}"></div><span class="text-sm ${i <= currentIdx ? 'text-dark font-medium' : 'text-gray-400'}">${step}</span></div>`;
+        }).join('');
+        return `
+          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-xs text-gray-400 mb-1">Mã: ${b.__backendId?.slice(0,8) || '---'}</p>
+                <h3 class="font-semibold text-dark">${b.service_type}</h3>
+                <p class="text-sm text-gray-500">${b.date} lúc ${b.time}</p>
+              </div>
+              <span class="text-xs font-medium px-3 py-1 rounded-full ${b.status === 'Hoàn thành' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-brand'}">${b.status}</span>
+            </div>
+            <div class="pl-2">${timeline}</div>
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+              <div class="text-sm"><span class="text-gray-500">KTV:</span> <span class="font-medium">${b.technician}</span></div>
+              <span class="text-brand font-bold">${b.estimated_cost?.toLocaleString()}đ</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // Technician dashboard
+    function renderTechDashboard() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayBookings = allBookings.filter(b => b.date === today);
+      document.getElementById('tech-today-count').textContent = todayBookings.length;
+      const tbody = document.getElementById('tech-bookings-table');
+      const empty = document.getElementById('tech-empty');
+      if (!allBookings.length) { empty.classList.remove('hidden'); tbody.innerHTML = ''; return; }
+      empty.classList.add('hidden');
+      tbody.innerHTML = allBookings.slice(0, 10).map(b => `
+        <tr class="border-t border-gray-50 hover:bg-gray-50">
+          <td class="px-5 py-3 font-medium">${b.full_name}</td>
+          <td class="px-5 py-3">${b.service_type}</td>
+          <td class="px-5 py-3">${b.date} ${b.time}</td>
+          <td class="px-5 py-3"><span class="text-xs font-medium px-2 py-1 rounded-full ${b.status === 'Hoàn thành' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-brand'}">${b.status}</span></td>
+          <td class="px-5 py-3"><button onclick="openStatusModal('${b.__backendId}')" class="text-brand hover:underline text-xs font-medium">Cập nhật</button></td>
+        </tr>
+      `).join('');
+    }
+
+    // Admin dashboard
+    function renderAdminDashboard() {
+      document.getElementById('admin-total').textContent = allBookings.length;
+      document.getElementById('admin-completed').textContent = allBookings.filter(b => b.status === 'Hoàn thành').length;
+      document.getElementById('admin-processing').textContent = allBookings.filter(b => b.status !== 'Hoàn thành').length;
+      const revenue = allBookings.filter(b => b.status === 'Hoàn thành').reduce((s, b) => s + (b.estimated_cost || 0), 0);
+      document.getElementById('admin-revenue').textContent = revenue.toLocaleString() + 'đ';
+      const tbody = document.getElementById('admin-bookings-table');
+      const empty = document.getElementById('admin-empty');
+      if (!allBookings.length) { empty.classList.remove('hidden'); tbody.innerHTML = ''; return; }
+      empty.classList.add('hidden');
+      tbody.innerHTML = allBookings.map(b => `
+        <tr class="border-t border-gray-50 hover:bg-gray-50">
+          <td class="px-5 py-3 text-xs text-gray-400">${b.__backendId?.slice(0,8) || '---'}</td>
+          <td class="px-5 py-3 font-medium">${b.full_name}</td>
+          <td class="px-5 py-3">${b.service_type}</td>
+          <td class="px-5 py-3">${b.date}</td>
+          <td class="px-5 py-3"><span class="text-xs font-medium px-2 py-1 rounded-full ${b.status === 'Hoàn thành' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-brand'}">${b.status}</span></td>
+          <td class="px-5 py-3"><button onclick="openStatusModal('${b.__backendId}')" class="text-brand hover:underline text-xs font-medium">Cập nhật</button></td>
+        </tr>
+      `).join('');
+    }
+
+    // Status modal
+    function openStatusModal(id) {
+      editingBookingId = id;
+      document.getElementById('status-modal').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('status-modal').classList.add('hidden');
+      editingBookingId = null;
+    }
+    async function confirmStatusUpdate() {
+      const booking = allBookings.find(b => b.__backendId === editingBookingId);
+      if (!booking) return;
+      const newStatus = document.getElementById('modal-status').value;
+      const result = await window.dataSdk.update({ ...booking, status: newStatus });
+      if (result.isOk) closeModal();
+    }
+
+    // Data SDK
+    const dataHandler = {
+      onDataChanged(data) {
+        allBookings = data;
+        const activePage = document.querySelector('.page.active')?.id;
+        if (activePage === 'page-tracking') renderTracking();
+        if (activePage === 'page-technician') renderTechDashboard();
+        if (activePage === 'page-admin') renderAdminDashboard();
+      }
+    };
+
+    // Element SDK
+    const defaultConfig = {
+      background_color: '#2563eb',
+      surface_color: '#ffffff',
+      text_color: '#1e293b',
+      primary_action_color: '#2563eb',
+      secondary_action_color: '#f97316',
+      font_family: 'Be Vietnam Pro',
+      font_size: 16,
+      hero_title: 'Đặt thợ sửa chữa tại nhà nhanh chóng',
+      hotline_text: '1900 1234'
+    };
+
+    function applyConfig(config) {
+      const bg = config.background_color || defaultConfig.background_color;
+      const surface = config.surface_color || defaultConfig.surface_color;
+      const text = config.text_color || defaultConfig.text_color;
+      const primary = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondary = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const font = config.font_family || defaultConfig.font_family;
+      const size = config.font_size || defaultConfig.font_size;
+
+      document.documentElement.style.setProperty('--brand', primary);
+      document.body.style.fontFamily = `${font}, sans-serif`;
+      document.body.style.fontSize = size + 'px';
+
+      const heroTitle = document.getElementById('hero-title');
+      if (heroTitle) heroTitle.textContent = config.hero_title || defaultConfig.hero_title;
+
+      const hotline = document.getElementById('nav-hotline');
+      if (hotline) hotline.innerHTML = `<i data-lucide="phone" class="w-4 h-4 inline"></i> ${config.hotline_text || defaultConfig.hotline_text}`;
+      const footerHotline = document.getElementById('footer-hotline');
+      if (footerHotline) footerHotline.textContent = config.hotline_text || defaultConfig.hotline_text;
+
+      lucide.createIcons();
+    }
+
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => { applyConfig(config); },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+          { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+          { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+        ],
+        borderables: [],
+        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+        fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['hero_title', config.hero_title || defaultConfig.hero_title],
+        ['hotline_text', config.hotline_text || defaultConfig.hotline_text]
+      ])
+    });
+
+    // Init
+    (async () => {
+      const r = await window.dataSdk.init(dataHandler);
+      if (!r.isOk) console.error('Data SDK init failed');
+      renderServices();
+      document.getElementById('bf-service').addEventListener('change', updateCost);
+      // Set min date
+      const dateInput = document.getElementById('bf-date');
+      if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
+    })();
+
+    lucide.createIcons();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f7d13dd614e5e02',t:'MTc3ODEyMzkwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+</body>
+</html>
